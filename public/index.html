@@ -4,8 +4,10 @@
 <title>login</title>
 </head>
 <body>
-  <div id="fb-root"></div>
+
+<div id="fb-root"></div>
 <script>
+
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
@@ -19,9 +21,13 @@
       testAPI();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into Facebook.';
     }
   }
 
@@ -66,41 +72,37 @@
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/sdk.js";
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=488487614648056";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
-  var userid;
+  var userid = "", username = "";
   function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
-    console.log('Successful login for: ' + response.name);
-        userid   = response.id;
+      console.log('Successful login for: ' + response.name);
         username = response.name;
-        if (userid && username) {
-          window.close();
+        userid   = response.id;
+        if (userid !== "" && username !== "") {
+          console.log("postMessage, name:" + username + ", id:"+userid);
+          parent.postMessage({
+            "username": username,
+            "userid"  : userid
+          }, "*");
         }
     });
   }
-
 </script>
 
- <style>
-  .wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-}
-</style>
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+-->
 
+<div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="true"></div>
 
-<div class="wrapper">
-<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="true" data-auto-logout-link="false"></div>
-</div>
-
-
-</div>
 </body>
 </html>
