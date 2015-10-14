@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "login"
+    },
+    "login": {
+      "applicationId": "6MP12DHwnQ6kAYZZIiMLvTz4Q2A40W8PVT7UO9rH"
+    }
+  }
+}
