@@ -21,7 +21,7 @@
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
       document.getElementById('status').innerHTML = '';
-      testAPI();
+      OnConnected();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'You are not authorized to this app.';
@@ -29,6 +29,7 @@
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
       document.getElementById('status').innerHTML = 'Please log into Facebook.';
+      OnDisconnected();
     }
   }
 
@@ -80,20 +81,30 @@
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
   var userid = "", username = "";
-  function testAPI() {
+  function OnConnected() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
         username = response.name;
         userid   = response.id;
         if (userid !== "" && username !== "") {
-          console.log("postMessage, name:" + username + ", id:"+userid);
+          console.log("post evet loggedin, name:" + username + ", id:"+userid);
           parent.postMessage({
+            "action"  : 1,
+            "actionName": "loggedin",
             "username": username,
             "userid"  : userid
           }, "*");
         }
     });
+  }
+
+  function OnDisconnected() {
+    console.log("post evet loggedout");
+    parent.postMessage({
+      "action"  : 0,
+      "actionName": "loggedout"
+    }, "*");
   }
 </script>
 
